@@ -161,7 +161,12 @@ def calc_geobleu(sys_seq, ans_seq):
     # loop over days, calculating geobleu for each day
     geobleu_val_list = list()
     for d in ans_dict_by_day.keys():
-        geobleu_val = calc_geobleu_orig(sys_dict_by_day[d], ans_dict_by_day[d])
+        geobleu_val = calc_geobleu_orig(
+            sys_dict_by_day[d], 
+            ans_dict_by_day[d],
+            max_n=3,
+            beta=0.5,
+            weights=None)
         geobleu_val_list.append(geobleu_val)
 
     # return the average value over days
