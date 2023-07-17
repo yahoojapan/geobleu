@@ -3,6 +3,10 @@ Python implementation of GEO-BLEU, a similarity evaluation method for trajectori
 
 https://dl.acm.org/doi/abs/10.1145/3557915.3560951
 
+**Note**
+Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), are implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
+
+
 ## Installation
 After downloading the repository and entering into it, execute the installation command as follows:
 ```
@@ -15,7 +19,69 @@ pip3 install .
 
 Prerequisites: numpy, scipy
 
-## Example
+## Evaluatoin functions (per uid) for HuMob Challenge 2023
+#### Overview
+This package provides two per-uid evaluation functions, calc_geobleu() and calc_dtw(), for the actual tasks. Both functions receive generated and reference trajectories belonging on a uid as the arguments and give the similarity value for GEO-BLEU and distance for DTW. A trajectory is assumed to be a list of tuples representing (d, t, x, y), and the values of days and times must be the same between generated and reference at each step. Internally, both functions evaluate trajectories day by day and return the average over the days.
+
+#### Example usage
+The following example calculates GEO-BLEU and DTW for two sample trajectories of a uid.
+```
+import geobleu
+
+# tuple format: (d, t, x, y)
+generated = [
+    (60, 12, 84, 88),
+    (60, 15, 114, 78),
+    (60, 21, 121, 96),
+    (61, 12, 78, 86),
+    (61, 13, 89, 67),
+    (61, 17, 97, 70),
+    (61, 20, 96, 70),
+    (61, 24, 111, 80),
+    (61, 25, 114, 78),
+    (61, 26, 99, 70),
+    (61, 38, 77, 86),
+    (62, 12, 77, 86),
+    (62, 14, 102, 129),
+    (62, 15, 104, 131),
+    (62, 17, 106, 131),
+    (62, 18, 104, 110)]
+
+reference = [
+    (60, 12, 82, 93),
+    (60, 15, 114, 78),
+    (60, 21, 116, 96),
+    (61, 12, 82, 84),
+    (61, 13, 89, 67),
+    (61, 17, 97, 70),
+    (61, 20, 91, 67),
+    (61, 24, 109, 82),
+    (61, 25, 110, 78),
+    (61, 26, 99, 70),
+    (61, 38, 77, 86),
+    (62, 12, 77, 86),
+    (62, 14, 97, 125),
+    (62, 15, 104, 131),
+    (62, 17, 106, 131),
+    (62, 18, 103, 111)]
+
+geobleu_val = geobleu.calc_geobleu(generated, reference)
+print("geobleu: {}".format(geobleu_val))
+
+dtw_val = geobleu.calc_dtw(generated, reference)
+print("dtw: {}".format(dtw_val))
+
+# geobleu: 0.21733678721880598
+# dtw: 5.889002930255253
+```
+
+#### Hyperparameter settings
+As for the hyperparameters for GEO-BLEU, we use N = 3 (using unigram, bigram, and trigram), w_n = 1/3 (modified precisions are geometric-averaged with equal weights), and beta = 0.5 (so that the proximity between two points becomes e^-1 when they are 1 km away).
+
+For DTW, we use 1 km as the unit length, dividing the distance calculated with the cell coordinates by 2 internally.
+
+
+## Sample implementation of GEO-BLEU itself
 Using the installed package, you can evaluate the similarity between generated and reference trajectories, giving the generated one as the first argument and the reference one as the second to its function calc_geobleu_orig().
 ```
 import geobleu
@@ -27,4 +93,3 @@ similarity = geobleu.calc_geobleu_orig(generated, reference)
 print(similarity)
 ```
 
-This function is for demonstration about how GEO-BLEU works, and the actual evaluate functions for the competition, including one for DTW, will be released here soon!
