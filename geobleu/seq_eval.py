@@ -34,10 +34,10 @@ def gen_ngram_list(seq, n):
 
     return ngram_list
         
-def calc_distance(point1, point2):
+def calc_distance(point1, point2, scale_factor=1.):
     x_diff = point2[0] - point1[0]
     y_diff = point2[1] - point1[1]
-    return np.sqrt(x_diff ** 2. + y_diff ** 2.)
+    return np.sqrt(x_diff ** 2. + y_diff ** 2.) / scale_factor
 
 def calc_point_proximity(point1, point2, beta):
     distance = calc_distance(point1, point2)
@@ -134,7 +134,7 @@ def calc_geobleu_orig(sys_seq, ans_seq, max_n=3, beta=0.5, weights=None):
         
     return brevity_penalty * stats.mstats.gmean(p_n_list)
 
-def calc_dtw_orig(sys_seq, ans_seq):
+def calc_dtw_orig(sys_seq, ans_seq, scale_factor=1.):
     n, m = len(sys_seq), len(ans_seq)
     dtw_matrix = np.zeros((n + 1, m + 1))
 
@@ -145,7 +145,7 @@ def calc_dtw_orig(sys_seq, ans_seq):
 
     for i in range(1, n + 1):
         for j in range(1, m + 1):
-            cost = calc_distance(sys_seq[i - 1], ans_seq[j - 1])
+            cost = calc_distance(sys_seq[i - 1], ans_seq[j - 1], scale_factor=scale_factor)
             last_min = np.min([dtw_matrix[i - 1, j], dtw_matrix[i, j - 1], dtw_matrix[i - 1, j - 1]])
             dtw_matrix[i, j] = cost + last_min
     return dtw_matrix[-1, -1]
@@ -178,7 +178,10 @@ def calc_dtw(sys_seq, ans_seq):
     # loop over days, calculating dtw for each day
     dtw_val_list = list()
     for d in ans_dict_by_day.keys():
-        dtw_val = calc_dtw_orig(sys_dict_by_day[d], ans_dict_by_day[d])
+        dtw_val = calc_dtw_orig(
+            sys_dict_by_day[d], 
+            ans_dict_by_day[d],
+            scale_factor=2.)
         dtw_val_list.append(dtw_val)
 
     # the average value over days
