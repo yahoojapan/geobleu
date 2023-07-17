@@ -1,4 +1,4 @@
-# Copyright 2023 Toru Shimizu, Yahoo Japan Corporation
+# Copyright 2023 Yahoo Japan Corporation
 #  
 # Permission is hereby granted, free of charge, to any person obtaining a 
 # copy of this software and associated documentation files (the "Software"), 
@@ -50,7 +50,7 @@ def calc_ngram_proximity(ngram1, ngram2, beta):
         
     return np.prod(point_proximity_list)
 
-def calc_geo_p_n(sys_seq, ans_seq, n, beta, trace=False):
+def calc_geo_p_n(sys_seq, ans_seq, n, beta):
     sys_ngram_list = gen_ngram_list(sys_seq, n)
     ans_ngram_list = gen_ngram_list(ans_seq, n)
 
@@ -91,10 +91,41 @@ def calc_geo_p_n(sys_seq, ans_seq, n, beta, trace=False):
     
     return geo_p_n
 
+def check_arguments(sys_seq, ans_seq):
+    # check the input arguments
+    if len(sys_seq) != len(ans_seq):
+        raise ValueError(
+            "The length doesn't match between the generated and reference trajectories.")
+
+    for idx, (sys_step, ans_step) in enumerate(zip(sys_seq, ans_seq)):
+        sys_d, sys_t = sys_step[:2]
+        ans_d, ans_t = ans_step[:2]
+        if not (sys_d == ans_d and sys_t == ans_t):
+            raise ValueError(
+                "Day and time are not consistent at step {}, "
+                "d={} and t={} for generated while d={} and t={} for reference.".format(
+                    idx, sys_d, sys_t, ans_d, ans_t))
+
+    sys_seq.sort(key=lambda x: (x[0], x[1]))
+    ans_seq.sort(key=lambda x: (x[0], x[1]))
+    return sys_seq, ans_seq
+
+def split_trajectory_by_day(seq):
+    dict_by_day = dict()
+    for d, t, x, y in seq:
+        if d not in dict_by_day.keys():
+            dict_by_day[d] = list()
+        dict_by_day[d].append((x, y))
+
+    return dict_by_day
+
 # == public method ==
-def calc_geobleu_orig(sys_seq, ans_seq, max_n=3, beta=0.5, weights=None, trace=False):
+def calc_geobleu_orig(sys_seq, ans_seq, max_n=3, beta=0.5, weights=None):
     p_n_list = list()
-    for i in range(1, max_n + 1):
+    seq_len_min = min(len(sys_seq), len(ans_seq))
+    max_n_alt = min(max_n, seq_len_min)
+
+    for i in range(1, max_n_alt + 1):
         p_n = calc_geo_p_n(sys_seq, ans_seq, i, beta)
         p_n_list.append(p_n)
         
@@ -102,4 +133,54 @@ def calc_geobleu_orig(sys_seq, ans_seq, max_n=3, beta=0.5, weights=None, trace=F
         else np.exp(1. - len(ans_seq) / float(len(sys_seq)))
         
     return brevity_penalty * stats.mstats.gmean(p_n_list)
+
+def calc_dtw_orig(sys_seq, ans_seq):
+    n, m = len(sys_seq), len(ans_seq)
+    dtw_matrix = np.zeros((n + 1, m + 1))
+
+    for i in range(n + 1):
+        for j in range(m + 1):
+            dtw_matrix[i, j] = np.inf
+    dtw_matrix[0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            cost = calc_distance(sys_seq[i - 1], ans_seq[j - 1])
+            last_min = np.min([dtw_matrix[i - 1, j], dtw_matrix[i, j - 1], dtw_matrix[i - 1, j - 1]])
+            dtw_matrix[i, j] = cost + last_min
+    return dtw_matrix[-1, -1]
+
+def calc_geobleu(sys_seq, ans_seq):
+    # check the input arguments
+    sys_seq, ans_seq = check_arguments(sys_seq, ans_seq)
+
+    # split the trajectories by day
+    sys_dict_by_day = split_trajectory_by_day(sys_seq)
+    ans_dict_by_day = split_trajectory_by_day(ans_seq)
+
+    # loop over days, calculating geobleu for each day
+    geobleu_val_list = list()
+    for d in ans_dict_by_day.keys():
+        geobleu_val = calc_geobleu_orig(sys_dict_by_day[d], ans_dict_by_day[d])
+        geobleu_val_list.append(geobleu_val)
+
+    # return the average value over days
+    return np.mean(geobleu_val_list)
+
+def calc_dtw(sys_seq, ans_seq):
+    # check the input arguments
+    sys_seq, ans_seq = check_arguments(sys_seq, ans_seq)
+
+    # split the trajectories by day
+    sys_dict_by_day = split_trajectory_by_day(sys_seq)
+    ans_dict_by_day = split_trajectory_by_day(ans_seq)
+
+    # loop over days, calculating dtw for each day
+    dtw_val_list = list()
+    for d in ans_dict_by_day.keys():
+        dtw_val = calc_dtw_orig(sys_dict_by_day[d], ans_dict_by_day[d])
+        dtw_val_list.append(dtw_val)
+
+    # the average value over days
+    return np.mean(dtw_val_list)
 
