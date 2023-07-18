@@ -3,8 +3,7 @@ Python implementation of GEO-BLEU, a similarity evaluation method for trajectori
 
 https://dl.acm.org/doi/abs/10.1145/3557915.3560951
 
-**Note**
-Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), are implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
+**Note:** Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), were implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
 
 
 ## Installation
@@ -21,7 +20,7 @@ Prerequisites: numpy, scipy
 
 ## Evaluatoin functions (per uid) for HuMob Challenge 2023
 #### Overview
-This package provides two per-uid evaluation functions, calc_geobleu() and calc_dtw(), for the actual tasks. Both functions receive generated and reference trajectories belonging on a uid as the arguments and give the similarity value for GEO-BLEU and distance for DTW. A trajectory is assumed to be a list of tuples representing (d, t, x, y), and the values of days and times must be the same between generated and reference at each step. Internally, both functions evaluate trajectories day by day and return the average over the days.
+This package provides two per-uid evaluation functions, calc_geobleu() and calc_dtw(), for the actual tasks. Both functions receive generated and reference trajectories belonging on a uid as the arguments and give the similarity value for GEO-BLEU and distance for DTW. A trajectory is assumed to be a list of tuples, each representing (d, t, x, y), and the values of days and times must be the same between generated and reference at each step. Internally, both functions evaluate trajectories day by day and return the average over the days.
 
 #### Example usage
 The following example calculates GEO-BLEU and DTW for two sample trajectories of a uid.
