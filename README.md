@@ -3,7 +3,16 @@ Python implementation of GEO-BLEU, a similarity evaluation method for trajectori
 
 https://dl.acm.org/doi/abs/10.1145/3557915.3560951
 
-**Note:** Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), were implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
+[HuMob Challenge 2023](https://connection.mit.edu/humob-challenge-2023) uses GEO-BLEU as one of the two evaluation metrics, and this repository provides necessary resources for the evaluation.
+
+GEO-BLEU is a similarity measure with a stronger focus on local features, as in similarity measures for natural language processing (e.g. BLEU). The more similar two trajectories, the larger the value. It gives 1 to two identical trajectories.
+
+The other, Dynamic Time Warping (DTW), is a distance measure comparing trajectories as a whole with step-by-step alignment. The more similar two trajectories, the smaller the value. It gives 0 to two identical trajectories.
+
+**Note:** 
+
+* The evaluation functions now support the 5-column format (uid, d, t, x, y) for each step in trajectories, in addition to the original 4-column (d, t, x, y). The number of columns must be the same among all the steps in two given trajectories.
+* Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), were implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
 
 
 ## Installation
