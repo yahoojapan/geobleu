@@ -11,7 +11,7 @@ The other, Dynamic Time Warping (DTW), is a distance measure comparing trajector
 
 **Note:** 
 
-* The evaluation functions now support the 5-column format (uid, d, t, x, y) for each step in trajectories, in addition to the original 4-column (d, t, x, y). The number of columns must be the same among all the steps in two given trajectories.
+* The evaluation functions now support the 5-column format (uid, d, t, x, y) for each step in trajectories, which is used in submission data, in addition to the original 4-column (d, t, x, y). The number of columns must be the same among all the steps in two given trajectories.
 * Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), were implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
 
 
