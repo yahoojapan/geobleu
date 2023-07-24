@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='geobleu',
-      version='0.2',
+      version='0.3',
       description='Implementation of GEO-BLEU and other evaluation metrics for HuMob Challenge 2023',
       url='http://github.com/storborg/funniest',
       author='Toru Shimizu, Yahoo Japan Corporation',
