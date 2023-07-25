@@ -31,7 +31,7 @@ Prerequisites: numpy, scipy
 #### Overview
 This package provides two per-uid evaluation functions, calc_geobleu() and calc_dtw(), for the actual tasks. Both functions receive generated and reference trajectories belonging on a uid as the arguments and give the similarity value for GEO-BLEU and distance for DTW. A trajectory is assumed to be a list of tuples, each representing (d, t, x, y) or (uid, d, t, x, y), and the values of days and times must be the same between generated and reference at each step. Internally, both functions evaluate trajectories day by day and return the average over the days.
 
-The final score for the tasks will be the average of these functions' output over all the uid's, and resultantly one submission will have two final scores, one based on GEO-BLEU and the other based on DTW.
+The final score for the tasks will be the average of these functions' output over all the uid's, and resultantly one submission for a task will have two final scores, one based on GEO-BLEU and the other based on DTW.
 
 #### Example usage
 The following example calculates GEO-BLEU and DTW for two sample trajectories of a uid.
