@@ -19,6 +19,8 @@
 # DEALINGS IN THE SOFTWARE.
 
 
+from collections import Counter
+
 import numpy as np
 from scipy import stats
 
@@ -93,19 +95,55 @@ def calc_geo_p_n(sys_seq, ans_seq, n, beta):
 
 def check_arguments(sys_seq, ans_seq):
     # check the input arguments
+
+    # the trajectory length
+    if len(sys_seq) == 0:
+        raise ValueError("The length of the generated trajectory is 0.")
+    if len(ans_seq) == 0:
+        raise ValueError("The length of the reference trajectory is 0.")
+
     if len(sys_seq) != len(ans_seq):
         raise ValueError(
             "The length doesn't match between the generated and reference trajectories.")
 
+    # the number of columns
+    sys_len_counter = Counter()
+    ans_len_counter = Counter()
+    for sys_step, ans_step in zip(sys_seq, ans_seq):
+        sys_len_counter[len(sys_step)] += 1
+        ans_len_counter[len(ans_step)] += 1
+    sys_len_list = list(sys_len_counter.keys())
+    ans_len_list = list(ans_len_counter.keys())
+    if len(sys_len_list) != 1:
+        raise ValueError("The numbers of columns of the generated trajectory are inconsistent: {}".format(sys_len_counter))
+    if len(ans_len_list) != 1:
+        raise ValueError("The numbers of columns of the reference trajectory are inconsistent: {}".format(ans_len_counter))
+
+    # only (d, t, x, y) and (uid, d, t, x, y) are acceptable, and the format must be
+    # the same between the generated and reference
+    sys_columns = sys_len_list[0]
+    ans_columns = ans_len_list[0]
+    if sys_columns != ans_columns:
+        raise ValueError("The numbers of columns are different between the generated and reference trajectories.")
+    if sys_columns not in {4, 5}:
+        raise ValueError("The numbers of columns must be 4, (d, t, x, y), or 5, (uid, d, t, x, y).")
+
+    # if the format is (uid, d, t, x, y), drop the uid column, making it (d, t, x, y)
+    if sys_columns == 5:
+        sys_seq = [step[1:] for step in sys_seq]
+        ans_seq = [step[1:] for step in ans_seq]
+
+    # consistency of day and time
     for idx, (sys_step, ans_step) in enumerate(zip(sys_seq, ans_seq)):
         sys_d, sys_t = sys_step[:2]
         ans_d, ans_t = ans_step[:2]
         if not (sys_d == ans_d and sys_t == ans_t):
             raise ValueError(
-                "Day and time are not consistent at step {}, "
+                "Day and time are not the same at step {}, "
                 "d={} and t={} for generated while d={} and t={} for reference.".format(
                     idx, sys_d, sys_t, ans_d, ans_t))
 
+    # sort by day and time just in case
     sys_seq.sort(key=lambda x: (x[0], x[1]))
     ans_seq.sort(key=lambda x: (x[0], x[1]))
     return sys_seq, ans_seq
