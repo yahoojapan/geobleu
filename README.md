@@ -11,7 +11,7 @@ The other, Dynamic Time Warping (DTW), is a distance measure comparing trajector
 
 **Note:** 
 
-* The evaluation functions now support the 5-column format (uid, d, t, x, y) for each step in trajectories, which is used in submission data, in addition to the original 4-column (d, t, x, y). The number of columns must be the same among all the steps in two given trajectories.
+* The evaluation functions now support the 5-column format (uid, d, t, x, y) for each step in trajectories, which will be used in actual submission data, in addition to the original 4-column (d, t, x, y). The number of columns must be the same among all the steps in two given trajectories.
 * Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), were implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
 
 
@@ -30,6 +30,8 @@ Prerequisites: numpy, scipy
 ## Evaluatoin functions (per uid) for HuMob Challenge 2023
 #### Overview
 This package provides two per-uid evaluation functions, calc_geobleu() and calc_dtw(), for the actual tasks. Both functions receive generated and reference trajectories belonging on a uid as the arguments and give the similarity value for GEO-BLEU and distance for DTW. A trajectory is assumed to be a list of tuples, each representing (d, t, x, y), and the values of days and times must be the same between generated and reference at each step. Internally, both functions evaluate trajectories day by day and return the average over the days.
+
+The final score for the tasks will be the average of these functions' output over all the uid's, and resultantly one submission will have two final scores, one based on GEO-BLEU and the other based on DTW.
 
 #### Example usage
 The following example calculates GEO-BLEU and DTW for two sample trajectories of a uid.
