@@ -1,4 +1,6 @@
 # geobleu
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Python implementation of GEO-BLEU, a similarity evaluation method for trajectories
 
 https://dl.acm.org/doi/abs/10.1145/3557915.3560951
@@ -88,7 +90,7 @@ print("dtw: {}".format(dtw_val))
 #### Hyperparameter settings
 As for the hyperparameters for GEO-BLEU, we use N = 3 (using unigram, bigram, and trigram), w_n = 1/3 (modified precisions are geometric-averaged with equal weights), and beta = 0.5 (so that the proximity between two points becomes e^-1 when they are 1 km away).
 
-For DTW, we use 1 km as the unit length, dividing the distance calculated with the cell coordinates by 2 internally.
+For DTW, we use 1 km as the unit length, dividing the distance calculated with cell coordinates by 2 internally.
 
 
 ## Sample implementation of GEO-BLEU itself
