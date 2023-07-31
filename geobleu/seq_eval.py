@@ -20,6 +20,7 @@
 
 
 from collections import Counter
+from multiprocessing import Pool
 
 import numpy as np
 from scipy import stats
@@ -157,6 +158,16 @@ def split_trajectory_by_day(seq):
 
     return dict_by_day
 
+def calc_geobleu_orig_wrapper_humob23(arg):
+    sys_seq = arg[0]
+    ans_seq = arg[1]
+    return calc_geobleu_orig(sys_seq, ans_seq, max_n=3, beta=0.5, weights=None)
+
+def calc_dtw_orig_wrapper_humob23(arg):
+    sys_seq = arg[0]
+    ans_seq = arg[1]
+    return calc_dtw_orig(sys_seq, ans_seq, scale_factor=2.)
+
 # == public method ==
 def calc_geobleu_orig(sys_seq, ans_seq, max_n=3, beta=0.5, weights=None):
     p_n_list = list()
@@ -188,7 +199,7 @@ def calc_dtw_orig(sys_seq, ans_seq, scale_factor=1.):
             dtw_matrix[i, j] = cost + last_min
     return dtw_matrix[-1, -1]
 
-def calc_geobleu(sys_seq, ans_seq):
+def calc_geobleu(sys_seq, ans_seq, processes=4):
     # check the input arguments
     sys_seq, ans_seq = check_arguments(sys_seq, ans_seq)
 
@@ -197,20 +208,21 @@ def calc_geobleu(sys_seq, ans_seq):
     ans_dict_by_day = split_trajectory_by_day(ans_seq)
 
     # loop over days, calculating geobleu for each day
-    geobleu_val_list = list()
+    arg_list = list()
     for d in ans_dict_by_day.keys():
-        geobleu_val = calc_geobleu_orig(
-            sys_dict_by_day[d], 
+        arg = (
+            sys_dict_by_day[d],
             ans_dict_by_day[d],
-            max_n=3,
-            beta=0.5,
-            weights=None)
-        geobleu_val_list.append(geobleu_val)
+        )
+        arg_list.append(arg)
+
+    with Pool(processes=processes) as p:
+        geobleu_val_list = p.map(calc_geobleu_orig_wrapper_humob23, arg_list)
 
     # return the average value over days
     return np.mean(geobleu_val_list)
 
-def calc_dtw(sys_seq, ans_seq):
+def calc_dtw(sys_seq, ans_seq, processes=4):
     # check the input arguments
     sys_seq, ans_seq = check_arguments(sys_seq, ans_seq)
 
@@ -219,13 +231,17 @@ def calc_dtw(sys_seq, ans_seq):
     ans_dict_by_day = split_trajectory_by_day(ans_seq)
 
     # loop over days, calculating dtw for each day
-    dtw_val_list = list()
+    # loop over days, calculating geobleu for each day
+    arg_list = list()
     for d in ans_dict_by_day.keys():
-        dtw_val = calc_dtw_orig(
-            sys_dict_by_day[d], 
+        arg = (
+            sys_dict_by_day[d],
             ans_dict_by_day[d],
-            scale_factor=2.)
-        dtw_val_list.append(dtw_val)
+        )
+        arg_list.append(arg)
+
+    with Pool(processes=processes) as p:
+        dtw_val_list = p.map(calc_dtw_orig_wrapper_humob23, arg_list)
 
     # the average value over days
     return np.mean(dtw_val_list)
