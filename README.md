@@ -36,6 +36,9 @@ This package provides two per-uid evaluation functions, calc_geobleu() and calc_
 
 The final score for the tasks will be the average of these functions' output over all the uid's. Resultantly, one submission for a task will have two final scores, one based on GEO-BLEU and the other based on DTW.
 
+Typical scale of GEO-BLEU scores for the tasks is quite small, often on the order of 10^-3 or 10^-4, due to the calculation involving exponential terms taking negative input values. We organizers are considering presenting submissions' performances in per mille or ppm.
+
+
 #### Example usage
 The following example calculates GEO-BLEU and DTW for two sample trajectories of a uid.
 ```
