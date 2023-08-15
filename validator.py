@@ -19,15 +19,6 @@ task_specs = {
         "coord_min": 1,
         "coord_max": 200,
     },
-    #"test": {
-    #    "uid_range": (100, 103),
-    #    "d_min": 60,
-    #    "d_max": 74,
-    #    "t_min": 0,
-    #    "t_max": 47,
-    #    "coord_min": 1,
-    #    "coord_max": 200,
-    #},
 }
 
 def error(message):
@@ -120,7 +111,7 @@ def main():
     # uid check
     if uid_set != uid_set_ref:
         error(
-            "The set of uid's doesn't match with that of reference; "
+            "The set of uid's doesn't match that of reference; "
             "there seems to be extra or lacking uid's")
 
     print("Validation finished without errors!")
