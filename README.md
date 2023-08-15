@@ -13,7 +13,7 @@ The other, Dynamic Time Warping (DTW), is a distance measure comparing trajector
 
 **Note:** 
 
-* For self-checking submission files, a validation tool validator.py was uploaded on Aug 15 (JST). This is a standalone python program taking the task id and submission file path as arguments and checking some basic requirements such as the number of columns and value ranges. Please refer to "Validation tool" section below for more details.
+* For helping to self-check submission files, a validation tool validator.py was uploaded on Aug 15 (JST). This is a standalone python program taking the task id and submission data's file path as arguments and checking some basic requirements such as the number of columns and value ranges. Please refer to "Validation tool" section below for more details.
 * As of Aug 1 (JST), execution of the evaluation fuctions are parallelized with multiprocessing, by splitting the calculation task on a per-day basis, and you can specify the number of processes by a keyword argument "processes" in both calc_geobleu() and calc_dtw() as in the sample code in "Example usage of the evaluation functions" section below. The default value is 4. You can just leave it as default if you don't need to accelerate the calculation.
 * The evaluation functions now support the 5-column format (uid, d, t, x, y) for each step in trajectories, which will be used in actual submission data, in addition to the original 4-column (d, t, x, y). The number of columns must be the same among all the steps in two given trajectories.
 * Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), were implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
@@ -98,7 +98,7 @@ As for the hyperparameters for GEO-BLEU, we use N = 3 (using unigram, bigram, an
 For DTW, we use 1 km as the unit length, dividing the distance calculated with cell coordinates by 2 internally.
 
 #### Validation tool
-You can check whether your submission files conform to the task requirements or not with a standaline python program, validator.py. It takes the task id and submission file path as arguments and emits errors if it finds anything wrong regarding the number of columns, uid, and value ranges of d, t, x, and y. A submission file may begin with the header line "uid,d,t,x,y", while omitting it is also acceptable. 
+You can check whether your submission files conform to the task requirements or not with a standalone python program, validator.py. It takes the task id and submission file path as arguments and emits errors if it finds anything wrong regarding the number of columns, uid, and value ranges of d, t, x, and y. A submission file may begin with the header line "uid,d,t,x,y", while omitting it is also acceptable. 
 
 For example, assuming your submission file for task 1 before compression is at foo/bar_task1_humob.csv, the command will be
 ```
