@@ -112,7 +112,7 @@ def main():
     if uid_set != uid_set_ref:
         error(
             "The set of uid's doesn't match that of reference; "
-            "there seems to be extra or lacking uid's")
+            "there seem to be extra or lacking uid's")
 
     print("Validation finished without errors!")
 
