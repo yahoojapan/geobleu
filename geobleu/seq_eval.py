@@ -231,7 +231,6 @@ def calc_dtw(sys_seq, ans_seq, processes=4):
     ans_dict_by_day = split_trajectory_by_day(ans_seq)
 
     # loop over days, calculating dtw for each day
-    # loop over days, calculating geobleu for each day
     arg_list = list()
     for d in ans_dict_by_day.keys():
         arg = (
@@ -242,6 +241,48 @@ def calc_dtw(sys_seq, ans_seq, processes=4):
 
     with Pool(processes=processes) as p:
         dtw_val_list = p.map(calc_dtw_orig_wrapper_humob23, arg_list)
+
+    # the average value over days
+    return np.mean(dtw_val_list)
+
+def calc_geobleu_single(sys_seq, ans_seq):
+    # check the input arguments
+    sys_seq, ans_seq = check_arguments(sys_seq, ans_seq)
+
+    # split the trajectories by day
+    sys_dict_by_day = split_trajectory_by_day(sys_seq)
+    ans_dict_by_day = split_trajectory_by_day(ans_seq)
+
+    # loop over days, calculating geobleu for each day
+    geobleu_val_list = list()
+    for d in ans_dict_by_day.keys():
+        geobleu_val = calc_geobleu_orig(
+            sys_dict_by_day[d],
+            ans_dict_by_day[d],
+            max_n=3,
+            beta=0.5,
+            weights=None)
+        geobleu_val_list.append(geobleu_val)
+
+    # return the average value over days
+    return np.mean(geobleu_val_list)
+
+def calc_dtw_single(sys_seq, ans_seq):
+    # check the input arguments
+    sys_seq, ans_seq = check_arguments(sys_seq, ans_seq)
+
+    # split the trajectories by day
+    sys_dict_by_day = split_trajectory_by_day(sys_seq)
+    ans_dict_by_day = split_trajectory_by_day(ans_seq)
+
+    # loop over days, calculating dtw for each day
+    dtw_val_list = list()
+    for d in ans_dict_by_day.keys():
+        dtw_val = calc_dtw_orig(
+            sys_dict_by_day[d],
+            ans_dict_by_day[d],
+            scale_factor=2.)
+        dtw_val_list.append(dtw_val)
 
     # the average value over days
     return np.mean(dtw_val_list)
