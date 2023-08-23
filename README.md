@@ -109,7 +109,7 @@ python3 validator.py 1 foo/bar_task1_humob.csv
 The line number in error messages is 0-indexed. If the tool doesn't find anything, it just says "Validation finished without errors!".
 
 #### Baseline method and results
-We organizers have applied a rudimentary baseline method to the two tasks, to roughly estimate the typlical/possible values of GEO-BLEU and DTW. First of all, we calculated the center points of the first 10,000 users in each dataset using trajectory steps within the first 60 days. Then, assuming the users are staying at their own center points thereafter, we compared such non-moving trajectories with actual consequences, i.e. trajectory steps within the last 15 days, and found the values of the metrics. This should be reproducible as we used the training part of the datasets.
+We organizers have applied a rudimentary baseline method to the two tasks, to roughly estimate the typlical/possible values of GEO-BLEU and DTW. First of all, we calculated the center points of the first 10,000 users in each dataset using trajectory steps within the first 60 days. Then, assuming the users are staying at their own center points thereafter, we compared such non-moving trajectories with the actual consequences, i.e. trajectory steps within the last 15 days, and found the values of the metrics. This should be reproducible as we used the training part of the datasets.
 
 The results were as follows:
 |  | GEO-BLEU | DTW |
