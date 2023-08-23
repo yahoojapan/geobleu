@@ -13,6 +13,7 @@ The other, Dynamic Time Warping (DTW), is a distance measure comparing trajector
 
 **Note:** 
 
+* We organizers implemented a simple baseline method to roughly estimate the values of GEO-BLEU and DTW for the tasks, obtaining around 0.4 for GEO-BLEU and around 60 for DTW. You can find further details in "Baseline method and results" section. 
 * For self-checking submission files, a validation tool validator.py was uploaded on Aug 15 (JST). This is a standalone python program taking the task id and submission data's file path as arguments and checking it against some basic requirements such as the number of columns and value ranges. Please refer to "Validation tool" section below for more details.
 * As of Aug 1 (JST), execution of the evaluation fuctions are parallelized with multiprocessing, by splitting the calculation task on a per-day basis, and you can specify the number of processes by a keyword argument "processes" in both calc_geobleu() and calc_dtw() as in the sample code in "Example usage of the evaluation functions" section below. The default value is 4. You can just leave it as default if you don't need to accelerate the calculation.
 * The evaluation functions now support the 5-column format (uid, d, t, x, y) for each step in trajectories, which will be used in actual submission data, in addition to the original 4-column (d, t, x, y). The number of columns must be the same among all the steps in two given trajectories.
@@ -37,7 +38,7 @@ This package provides two per-uid evaluation functions, calc_geobleu() and calc_
 
 The final score for the tasks will be the average of these functions' output over all the uid's. Resultantly, one submission for a task will have two final scores, one based on GEO-BLEU and the other based on DTW.
 
-Typical scale of GEO-BLEU scores for the tasks is quite small, often on the order of 10^-3 or 10^-4, due to the calculation involving exponential terms taking negative input values. We organizers are considering presenting submissions' performances in per mille or ppm.
+Typical scale of GEO-BLEU scores for the tasks can be quite small, possibly on the order of 10^-3 or 10^-4, due to the calculation involving exponential terms taking negative input values. If that is the case for majority of submissions, we organizers will be presenting performances in per mille or ppm.
 
 
 #### Example usage of the evaluation functions
@@ -106,6 +107,15 @@ python3 validator.py 1 foo/bar_task1_humob.csv
 ```
 
 The line number in error messages is 0-indexed. If the tool doesn't find anything, it just says "Validation finished without errors!".
+
+#### Baseline method and results
+We organizers have applied a rudimentary baseline method to the tasks, to roughly estimate the typlical/possible values of GEO-BLEU and DTW. First of all, we calculated the center points of the first 10,000 users in a dataset using trajectory steps within the first 60 days. Then, assuming the users are staying at their own center points thereafter, we compared such non-moving trajectories with the actual consequences, i.e. trajectory steps within the last 15 days, and found the values of the metrics. The results should be reproducible as we used the training part of the dataset.
+
+The results were as follows:
+|  | GEO-BLEU | DTW |
+| --- | --- | --- |
+| task 1 | 0.04195 | 62.67 |
+| task 2 | 0.04177 | 65.38 |
 
 ## Sample implementation of GEO-BLEU itself
 Using the installed package, you can evaluate the similarity between generated and reference trajectories, giving the generated one as the first argument and the reference one as the second to its function calc_geobleu_orig().
