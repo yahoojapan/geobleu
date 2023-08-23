@@ -38,7 +38,7 @@ This package provides two per-uid evaluation functions, calc_geobleu() and calc_
 
 The final score for the tasks will be the average of these functions' output over all the uid's. Resultantly, one submission for a task will have two final scores, one based on GEO-BLEU and the other based on DTW.
 
-Typical scale of GEO-BLEU scores for the tasks can be quite small, possibly on the order of 10^-3 or 10^-4, due to the calculation involving exponential terms taking negative input values. If that is the case for majority of submissions, we organizers will be presenting performances in per mille or ppm.
+Typical scale of GEO-BLEU scores for the tasks can be quite small, possibly on the order of 10^-3 or 10^-4, due to the calculation involving exponential terms taking negative input values. If that is the case for the majority of submissions, we organizers will be presenting performances in per mille or ppm.
 
 
 #### Example usage of the evaluation functions
@@ -109,13 +109,14 @@ python3 validator.py 1 foo/bar_task1_humob.csv
 The line number in error messages is 0-indexed. If the tool doesn't find anything, it just says "Validation finished without errors!".
 
 #### Baseline method and results
-We organizers have applied a rudimentary baseline method to the tasks, to roughly estimate the typlical/possible values of GEO-BLEU and DTW. First of all, we calculated the center points of the first 10,000 users in a dataset using trajectory steps within the first 60 days. Then, assuming the users are staying at their own center points thereafter, we compared such non-moving trajectories with the actual consequences, i.e. trajectory steps within the last 15 days, and found the values of the metrics. The results should be reproducible as we used the training part of the dataset.
+We organizers have applied a rudimentary baseline method to the two tasks, to roughly estimate the typlical/possible values of GEO-BLEU and DTW. First of all, we calculated the center points of the first 10,000 users in each dataset using trajectory steps within the first 60 days. Then, assuming the users are staying at their own center points thereafter, we compared such non-moving trajectories with actual consequences, i.e. trajectory steps within the last 15 days, and found the values of the metrics. This should be reproducible as we used the training part of the datasets.
 
 The results were as follows:
 |  | GEO-BLEU | DTW |
 | --- | --- | --- |
 | task 1 | 0.04195 | 62.67 |
 | task 2 | 0.04177 | 65.38 |
+
 
 ## Sample implementation of GEO-BLEU itself
 Using the installed package, you can evaluate the similarity between generated and reference trajectories, giving the generated one as the first argument and the reference one as the second to its function calc_geobleu_orig().
