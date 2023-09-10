@@ -13,7 +13,7 @@ The other, Dynamic Time Warping (DTW), is a distance measure comparing trajector
 
 **Note:** 
 
-* The validation tool 'validation.py' has been updated so as to use the training data, and now it checks consistency of trajectory lengths and actual values of d and t between submission data and the training data.  
+* The submission data checking tool, validator.py, has been updated so as to use the training data, and now it checks consistency between submission data and training data in addition to the format and value ranges. Please see "Validation tool" section below for actual usage examples. 
 * We organizers implemented a simple baseline method to roughly estimate the values of GEO-BLEU and DTW for the tasks, obtaining around 0.4 for GEO-BLEU and around 60 for DTW. You can find further details in "Baseline method and results" section. 
 * For self-checking submission files, a validation tool validator.py was uploaded on Aug 15 (JST). This is a standalone python program taking the task id and submission data's file path as arguments and checking it against some basic requirements such as the number of columns and value ranges. Please refer to "Validation tool" section below for more details.
 * As of Aug 1 (JST), execution of the evaluation fuctions are parallelized with multiprocessing, by splitting the calculation task on a per-day basis, and you can specify the number of processes by a keyword argument "processes" in both calc_geobleu() and calc_dtw() as in the sample code in "Example usage of the evaluation functions" section below. The default value is 4. You can just leave it as default if you don't need to accelerate the calculation.
