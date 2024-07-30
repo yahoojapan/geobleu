@@ -89,7 +89,7 @@ As for the hyperparameters for GEO-BLEU, we use N = 3 (using unigram, bigram, an
 
 For DTW, we use 1 km as the unit length, dividing the distance calculated with cell coordinates by 2 internally.
 
-## Sample interface for evaluating a trajectory pair
+## Simple interface for evaluating a trajectory pair
 Using the installed package, you can evaluate the similarity between generated and reference trajectories, giving the generated one as the first argument and the reference one as the second to its function calc_geobleu_orig().
 ```
 import geobleu
