@@ -11,16 +11,6 @@ GEO-BLEU is a similarity measure with a stronger focus on local features, as in 
 
 The other, Dynamic Time Warping (DTW), is a distance measure comparing trajectories as a whole with step-by-step alignment. The more similar two trajectories, the smaller the value. It gives 0 to two identical trajectories.
 
-**Note:** 
-
-* The submission data checking tool, validator.py, has been updated so as to use the training data, and now it checks consistency between submission data and training data in addition to the format and value ranges. Please see "Validation tool" section below for actual usage examples. 
-* We organizers implemented a simple baseline method to roughly estimate the values of GEO-BLEU and DTW for the tasks, obtaining around 0.4 for GEO-BLEU and around 60 for DTW. You can find further details in "Baseline method and results" section. 
-* For self-checking submission files, a validation tool validator.py was uploaded on Aug 15 (JST). This is a standalone python program taking the task id and submission data's file path as arguments and checking it against some basic requirements such as the number of columns and value ranges. Please refer to "Validation tool" section below for more details.
-* As of Aug 1 (JST), execution of the evaluation fuctions are parallelized with multiprocessing, by splitting the calculation task on a per-day basis, and you can specify the number of processes by a keyword argument "processes" in both calc_geobleu() and calc_dtw() as in the sample code in "Example usage of the evaluation functions" section below. The default value is 4. You can just leave it as default if you don't need to accelerate the calculation.
-* The evaluation functions now support the 5-column format (uid, d, t, x, y) for each step in trajectories, which will be used in actual submission data, in addition to the original 4-column (d, t, x, y). The number of columns must be the same among all the steps in two given trajectories.
-* Two evaluation functions for HuMob Challenge 2023, calc_geobleu() and calc_dtw(), were implemented on Jul 18 (JST). Please reinstall the package if you are using a previous version.
-
-
 ## Installation
 After downloading the repository and entering into it, execute the installation command as follows:
 ```
@@ -33,7 +23,7 @@ pip3 install .
 
 Prerequisites: numpy, scipy
 
-## Evaluatoin functions (per uid) for HuMob Challenge 2023
+## Evaluatoin functions (per uid) for HuMob Challenge 2024
 #### Overview
 This package provides two per-uid evaluation functions, calc_geobleu() and calc_dtw(), for the actual tasks. Both functions receive generated and reference trajectories belonging on a uid as the arguments and give the similarity value for GEO-BLEU and distance for DTW respectively. A trajectory is assumed to be a list of tuples, each representing (d, t, x, y) or (uid, d, t, x, y), and the values of days and times must be the same between generated and reference at each step. Internally, both functions evaluate trajectories day by day and return the average over the days.
 
@@ -108,16 +98,6 @@ python3 validator.py 1 foo/task1_dataset.csv bar/baz_task1_humob.csv
 ```
 
 The line number and the step number in a trajectory in error messages is 0-indexed. If the tool doesn't find anything, it just says "Validation finished without errors!".
-
-#### Baseline method and results
-We organizers have applied a rudimentary baseline method to the two tasks, to roughly estimate the typlical/possible values of GEO-BLEU and DTW. First of all, we calculated the center points of the first 10,000 users in each dataset using trajectory steps within the first 60 days. Then, assuming the users are staying at their own center points thereafter, we compared such non-moving trajectories with the actual consequences, i.e. trajectory steps within the last 15 days, and found the values of the metrics. This should be reproducible as we used the training part of the datasets.
-
-The results were as follows:
-|  | GEO-BLEU | DTW |
-| --- | --- | --- |
-| task 1 | 0.04195 | 62.67 |
-| task 2 | 0.04177 | 65.38 |
-
 
 ## Sample implementation of GEO-BLEU itself
 Using the installed package, you can evaluate the similarity between generated and reference trajectories, giving the generated one as the first argument and the reference one as the second to its function calc_geobleu_orig().
