@@ -5,7 +5,7 @@ Python implementation of GEO-BLEU, a similarity evaluation method for trajectori
 
 https://dl.acm.org/doi/abs/10.1145/3557915.3560951
 
-[HuMob Challenge 2023](https://connection.mit.edu/humob-challenge-2023) uses GEO-BLEU as one of the two evaluation metrics, and this repository provides necessary resources for the evaluation.
+[HuMob Challenge 2024](https://wp.nyu.edu/humobchallenge2024/) uses GEO-BLEU as one of the two evaluation metrics, and this repository provides necessary resources for the evaluation.
 
 GEO-BLEU is a similarity measure with a stronger focus on local features, as in similarity measures for natural language processing (e.g. BLEU). The more similar two trajectories, the larger the value. It gives 1 to two identical trajectories.
 
