@@ -1,8 +1,8 @@
 import sys
 
 task_specs = {
-    "1": {
-        "uid_range": (80000, 100000),
+    "b": {
+        "uid_range": (22000, 25000),
         "d_min": 60,
         "d_max": 74,
         "t_min": 0,
@@ -10,8 +10,17 @@ task_specs = {
         "coord_min": 1,
         "coord_max": 200,
     },
-    "2": {
-        "uid_range": (22500, 25000),
+    "c": {
+        "uid_range": (17000, 20000),
+        "d_min": 60,
+        "d_max": 74,
+        "t_min": 0,
+        "t_max": 47,
+        "coord_min": 1,
+        "coord_max": 200,
+    },
+    "d": {
+        "uid_range": (3000, 6000),
         "d_min": 60,
         "d_max": 74,
         "t_min": 0,
@@ -85,7 +94,7 @@ def main():
             "    python3 validator.py task_id dataset_file_path submission_file_path\n"
             "        where task_id is either 1 or 2")
 
-    task_id = sys.argv[1]
+    task_id = sys.argv[1].lower()
     dataset_fpath = sys.argv[2]
     generated_fpath = sys.argv[3]
 
