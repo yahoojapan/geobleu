@@ -89,6 +89,16 @@ As for the hyperparameters for GEO-BLEU, we use N = 3 (using unigram, bigram, an
 
 For DTW, we use 1 km as the unit length, dividing the distance calculated with cell coordinates by 2 internally.
 
+#### Validation tool
+You can check whether your submission files conform to the task requirements using a standalone Python program, `validator.py`. It takes the task ID, the corresponding training data file path, and the submission file path as arguments, and it emits errors if it finds any issues with the formatting or inconsistencies between the training data and the given submission file. A submission file may begin with the header line `uid,d,t,x,y`, but omitting it is also acceptable.
+
+For example, assuming task B's training data after decompression is at `foo/task_b_dataset.csv`, and your submission file for task B before compression is at `bar/baz_task_b_humob.csv`, the command will be:
+```
+python3 validator.py b foo/task_b_dataset.csv bar/baz_task_b_humob.csv
+```
+
+The line number and the step number in a trajectory in error messages are 0-indexed. If the tool doesn't find any issues, it will simply say "Validation finished without errors!".
+
 ## Simple interface for evaluating a trajectory pair
 Using the installed package, you can evaluate the similarity between generated and reference trajectories, giving the generated one as the first argument and the reference one as the second to its function calc_geobleu_orig().
 ```
