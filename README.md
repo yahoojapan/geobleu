@@ -11,6 +11,10 @@ GEO-BLEU is a similarity measure with a stronger focus on local features, as in 
 
 The other, Dynamic Time Warping (DTW), is a distance measure comparing trajectories as a whole with step-by-step alignment. The more similar two trajectories, the smaller the value. It gives 0 to two identical trajectories.
 
+**Note:**
+
+* The validation tool has been updated to be compatible with the tasks of the HuMob Challenge 2024.
+
 ## Installation
 After downloading the repository and entering into it, execute the installation command as follows:
 ```
