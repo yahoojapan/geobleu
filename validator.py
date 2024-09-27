@@ -92,7 +92,7 @@ def main():
         error(
             "Usage: \n"
             "    python3 validator.py task_id dataset_file_path submission_file_path\n"
-            "        where task_id is either 1 or 2")
+            "        where task_id is b, c, or d")
 
     task_id = sys.argv[1].lower()
     dataset_fpath = sys.argv[2]
