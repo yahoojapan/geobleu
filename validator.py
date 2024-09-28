@@ -159,7 +159,7 @@ def main():
         if d < d_min or d > d_max:
             error(
                 error_prefix + \
-                "d={} is out of range".format(d))
+                "d={} is out of range (It must be within the prediction target period, which is from {} to {}.)".format(d, d_min, d_max))
         if t < t_min or t > t_max:
             error(
                 error_prefix + \
