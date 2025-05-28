@@ -9,9 +9,11 @@ https://dl.acm.org/doi/abs/10.1145/3557915.3560951
 
 GEO-BLEU is a similarity measure with a stronger focus on local features, as in similarity measures for natural language processing (e.g. BLEU). The more similar two trajectories are, the larger the value. It assigns a score of 1 to two identical trajectories.
 
-**Note:**
+**Note:** (in reverse-chronological order)
 
 * May 28: The validation tool and the parameters for GEO-BLEU have been updated to be compatible with the tasks of GIS Cup 2025.
+* May 28: Switched the GEO-BLEU evaluation function used in the usage example from the multi-process version `calc_geobleu()` to the single-process version `calc_geobleu_single()`. We will redesign the interface of the multi-process version so that it can handle data containing sequences of multiple users and re-release it soon.
+
 
 ## Installation
 After downloading the repository and entering into it, execute the installation command as follows:
