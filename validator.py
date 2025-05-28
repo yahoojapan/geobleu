@@ -1,28 +1,37 @@
 import sys
 
 task_specs = {
+    "a": {
+        "uid_range": (147001, 150000),
+        "d_min": 61,
+        "d_max": 75,
+        "t_min": 0,
+        "t_max": 47,
+        "coord_min": 1,
+        "coord_max": 200,
+    },
     "b": {
-        "uid_range": (22000, 25000),
-        "d_min": 60,
-        "d_max": 74,
+        "uid_range": (27001, 30000),
+        "d_min": 61,
+        "d_max": 75,
         "t_min": 0,
         "t_max": 47,
         "coord_min": 1,
         "coord_max": 200,
     },
     "c": {
-        "uid_range": (17000, 20000),
-        "d_min": 60,
-        "d_max": 74,
+        "uid_range": (22001, 25000),
+        "d_min": 61,
+        "d_max": 75,
         "t_min": 0,
         "t_max": 47,
         "coord_min": 1,
         "coord_max": 200,
     },
     "d": {
-        "uid_range": (3000, 6000),
-        "d_min": 60,
-        "d_max": 74,
+        "uid_range": (17001, 20000),
+        "d_min": 61,
+        "d_max": 75,
         "t_min": 0,
         "t_max": 47,
         "coord_min": 1,
@@ -92,7 +101,7 @@ def main():
         error(
             "Usage: \n"
             "    python3 validator.py task_id dataset_file_path submission_file_path\n"
-            "        where task_id is b, c, or d")
+            "        where task_id is a, b, c, or d")
 
     task_id = sys.argv[1].lower()
     dataset_fpath = sys.argv[2]
@@ -114,7 +123,8 @@ def main():
 
     # prepare the reference set of uid's
     uid_set_ref = set()
-    for uid in range(*specs["uid_range"]):
+    uid_min, uid_max = specs["uid_range"]
+    for uid in range(uid_min, uid_max + 1):
         uid_set_ref.add(uid)
 
     # now start the actual test...
@@ -180,6 +190,7 @@ def main():
 
     # uid check
     print("Checking the set of uid's...")
+    print("# of uid's: {}".format(len(uid_set)))
     if uid_set != uid_set_ref:
         error(
             "The set of uid's doesn't match that of reference; "
@@ -189,7 +200,7 @@ def main():
     # comparison between the submission file and the dataset
     print("Now loading the dataset file and comparing the submission data to it...")
     ans_uid_dict = load_dataset(dataset_fpath, specs)
-    for uid in range(specs["uid_range"][0], specs["uid_range"][1]):
+    for uid in range(specs["uid_range"][0], specs["uid_range"][1] + 1):
         pred_seq = pred_uid_dict[uid]
         ans_seq = ans_uid_dict[uid]
         check_consistency(pred_seq, ans_seq, uid)
