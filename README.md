@@ -80,7 +80,7 @@ print("geobleu: {}".format(geobleu_val))
 ```
 
 #### Hyperparameter settings
-As for the hyperparameters for GEO-BLEU, we use N = 5 (using unigram, bigram, through up to 5-gram), w_n = 1/5 (modified precisions are geometric-averaged with equal weights), and beta = 0.5 (so that the proximity between two points becomes e^-1 when they are 1 km away).
+As for the hyperparameters for GEO-BLEU, we use N = 5 (using unigrams, bigrams, up to 5-grams), w_n = 1/5 (modified precisions are geometric-averaged with equal weights), and beta = 0.5 (so that the proximity between two points becomes e^-1 when they are 1 km away).
 
 #### Validation tool
 You can check whether your submission files conform to the task requirements using a standalone Python program, `validator.py`. It takes the task ID, the corresponding training data file path, and the submission file path as arguments, and it emits errors if it finds any issues with the formatting or inconsistencies between the training data and the given submission file. A submission file may begin with the header line `uid,d,t,x,y`, but omitting it is also acceptable.
