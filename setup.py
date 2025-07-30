@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='geobleu',
-      version='0.4',
+      version='0.5',
       description='Implementation of GEO-BLEU and other evaluation metrics for HuMob Challenge',
       url='https://github.com/yahoojapan/geobleu',
       author='Toru Shimizu, LY Corporation',

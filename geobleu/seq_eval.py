@@ -1,4 +1,4 @@
-# Copyright 2023 Yahoo Japan Corporation
+# Copyright 2025 LY Corporation
 #  
 # Permission is hereby granted, free of charge, to any person obtaining a 
 # copy of this software and associated documentation files (the "Software"), 
@@ -277,5 +277,64 @@ def calc_dtw_single(sys_seq, ans_seq):
         dtw_val_list.append(dtw_val)
 
     # the average value over days
+    return np.mean(dtw_val_list)
+
+def _group_staypoints_by_uid(sp_list):
+    uid_dict = dict()
+    for item in sp_list:
+        if len(item) != 5:
+            raise ValueError(f"Each trajectory point must have 5 elements (uid, d, t, x, y), but got {len(item)}: {item}")
+        uid, d, t, x, y = item
+
+        if uid not in uid_dict:
+            uid_dict[uid] = list()
+        uid_dict[uid].append((d, t, x, y))
+
+    return uid_dict
+
+def calc_geobleu_bulk(sys_list, ans_list, processes=4):
+    '''Calculate the geobleu score for multiple sequences at once in parallel.
+    Both sys_list and ans_list should be a list of tuples representing (uid, d, t, x, y).'''
+
+    # preprocess: group by uid
+    sys_uid_dict = _group_staypoints_by_uid(sys_list)
+    ans_uid_dict = _group_staypoints_by_uid(ans_list)
+
+    # check uid consistency
+    sys_uid_set = set(sys_uid_dict.keys())
+    ans_uid_set = set(ans_uid_dict.keys())
+    if sys_uid_set != ans_uid_set:
+        raise ValueError("The sets of uid's don't match between sys (prediction) and ans.")
+
+    # prepare argument list for parallel processing
+    arg_list = [(sys_uid_dict[uid], ans_uid_dict[uid]) for uid in sys_uid_set]
+
+    # parallel evaluation using calc_geobleu_single()
+    with Pool(processes=processes) as p:
+        geobleu_val_list = p.starmap(calc_geobleu_single, arg_list)
+
+    return np.mean(geobleu_val_list)
+
+def calc_dtw_bulk(sys_list, ans_list, processes=4):
+    '''Calculate the dtw score for multiple sequences at once in parallel.
+    Both sys_list and ans_list should be a list of tuples representing (uid, d, t, x, y).'''
+
+    # preprocess: group by uid
+    sys_uid_dict = _group_staypoints_by_uid(sys_list)
+    ans_uid_dict = _group_staypoints_by_uid(ans_list)
+
+    # check uid consistency
+    sys_uid_set = set(sys_uid_dict.keys())
+    ans_uid_set = set(ans_uid_dict.keys())
+    if sys_uid_set != ans_uid_set:
+        raise ValueError("The sets of uid's don't match between sys and ans.")
+
+    # prepare argument list for parallel processing
+    arg_list = [(sys_uid_dict[uid], ans_uid_dict[uid]) for uid in sys_uid_set]
+
+    # parallel evaluation using calc_dtw_single()
+    with Pool(processes=processes) as p:
+        dtw_val_list = p.starmap(calc_dtw_single, arg_list)
+
     return np.mean(dtw_val_list)
 
